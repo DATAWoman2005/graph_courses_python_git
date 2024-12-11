@@ -1,0 +1,334 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Pandas Subset Columns\"\n",
+        "\n",
+        "\n",
+        "author: \"Adijat Adenaike\"\n",
+        "\n",
+        "\n",
+        "format: html\n",
+        "    embed-resource:true\n",
+        "---\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Subsetting Columns \n",
+        "\n",
+        "# Imports\n"
+      ],
+      "id": "ad872512"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd"
+      ],
+      "id": "dc2a1ae5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Dataset\n"
+      ],
+      "id": "4b070466"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao = pd.read_csv(\"data/yaounde_data.csv\")\n",
+        "yao"
+      ],
+      "id": "be8864cd",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Selecting Columns with square brackets\n"
+      ],
+      "id": "d230a982"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_subset = yao [[\"age\", \"sex\"]]\n",
+        "yao_subset"
+      ],
+      "id": "450b6fe7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Storing data subsets\n"
+      ],
+      "id": "e541e01f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_subset = yao [[\"age\"]]\n",
+        "yao_subset"
+      ],
+      "id": "a4b5803c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Practice Q: Select columns with []\n"
+      ],
+      "id": "a2e35d65"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_weight_height = yao[[\"weight_kg\", \"height_cm\"]]\n",
+        "yao_weight_height"
+      ],
+      "id": "199c3737",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Excluding columns with drop\n"
+      ],
+      "id": "6038c673"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao.drop(columns=[\"age\"])"
+      ],
+      "id": "5de20c57",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Practice Q:\n"
+      ],
+      "id": "34223055"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_no_education_consultation = yao.drop(columns=[\"highest_education\", \"consultation\"])\n",
+        "yao_no_education_consultation"
+      ],
+      "id": "29ba10b4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## using filter to select columns by regex\n"
+      ],
+      "id": "00db6008"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao.filter(regex=\"ig\")"
+      ],
+      "id": "75250553",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao.filter(regex=\"^ig\") #^starts with ig"
+      ],
+      "id": "67ea2e61",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao.filter(regex=\"result$\") # ends with result"
+      ],
+      "id": "a4e51028",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Practice Q:\n"
+      ],
+      "id": "2724c956"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_is_columns = yao.filter(regex=\"^is_\")\n",
+        "yao_is_columns"
+      ],
+      "id": "aff6e0ed",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Change column names with rename\n"
+      ],
+      "id": "9e952922"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao.rename(columns={\"age\": \"patient_age\", \"sex\": \"patient_sex\"})"
+      ],
+      "id": "cddca54d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Practice Q:\n"
+      ],
+      "id": "1fd28b84"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "yao_age_cat = yao.rename(columns={\"age_category\": \"age_cat\"})\n",
+        "yao_age_cat"
+      ],
+      "id": "31391a3b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Cleaning messy column names\n"
+      ],
+      "id": "c7d49b48"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "test_df = pd.DataFrame({\"good_name\": range(3), \"bad name\": range(3), \"bad*@name*2\": range(3)})\n",
+        "test_df"
+      ],
+      "id": "f24af2b8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# bad names are not accessible through dot syntax \n",
+        "# test_df.bad name"
+      ],
+      "id": "f8c070c0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "test_df.columns = test_df.columns.str.replace(r\"[a^zA-Z0-9]\", \"_\", regex=True)"
+      ],
+      "id": "22690709",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "test_df"
+      ],
+      "id": "cb1e4724",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Practice Q:\n"
+      ],
+      "id": "b96d6db0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cleansing_practice = pd.DataFrame({\"Aloha\": range(3), \"Dell Chart\": range(3), \"Animals@the zoo\": range(3)})\n",
+        "cleansing_practice"
+      ],
+      "id": "c31f6640",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cleansing_practice.columns=cleansing_practice.columns.str.replace(r\"[a^zA-Z0-9]\", \"_\", regex=True)\n",
+        "cleansing_practice"
+      ],
+      "id": "07c683cd",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "c:\\Users\\dataw\\OneDrive\\Desktop\\graph_courses_python\\.venv\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

@@ -1,0 +1,139 @@
+---
+title: "Pandas Subset Columns"
+
+
+author: "Adijat Adenaike"
+
+
+format: 
+    html
+       embed-resource: true
+---
+
+
+# Subsetting Columns 
+
+# Imports
+
+
+```{python}
+import pandas as pd
+```
+
+# Dataset
+
+
+```{python}
+yao = pd.read_csv("data/yaounde_data.csv")
+yao
+```
+
+## Selecting Columns with square brackets
+
+
+```{python}
+yao_subset = yao [["age", "sex"]]
+yao_subset
+```
+
+## Storing data subsets
+
+```{python}
+yao_subset = yao [["age"]]
+yao_subset
+```
+
+## Practice Q: Select columns with []
+
+```{python}
+yao_weight_height = yao[["weight_kg", "height_cm"]]
+yao_weight_height
+```
+
+## Excluding columns with drop
+
+```{python}
+yao.drop(columns=["age"])
+```
+
+
+## Practice Q:
+
+
+```{python}
+yao_no_education_consultation = yao.drop(columns=["highest_education", "consultation"])
+yao_no_education_consultation
+```
+
+## using filter to select columns by regex
+
+
+```{python}
+yao.filter(regex="ig")
+```
+
+```{python}
+yao.filter(regex="^ig") #^starts with ig
+```
+
+```{python}
+yao.filter(regex="result$") # ends with result
+```
+
+## Practice Q:
+
+```{python}
+yao_is_columns = yao.filter(regex="^is_")
+yao_is_columns
+```
+
+## Change column names with rename
+
+
+```{python}
+yao.rename(columns={"age": "patient_age", "sex": "patient_sex"})
+```
+
+## Practice Q:
+
+
+```{python}
+yao_age_cat = yao.rename(columns={"age_category": "age_cat"})
+yao_age_cat
+```
+
+## Cleaning messy column names
+
+```{python}
+test_df = pd.DataFrame({"good_name": range(3), "bad name": range(3), "bad*@name*2": range(3)})
+test_df
+```
+
+```{python}
+# bad names are not accessible through dot syntax 
+# test_df.bad name
+```
+
+```{python}
+test_df.columns = test_df.columns.str.replace(r"[a^zA-Z0-9]", "_", regex=True)
+```
+
+```{python}
+test_df
+```
+
+## Practice Q:
+
+```{python}
+cleansing_practice = pd.DataFrame({"Aloha": range(3), "Dell Chart": range(3), "Animals@the zoo": range(3)})
+cleansing_practice
+```
+
+
+```{python}
+cleansing_practice.columns=cleansing_practice.columns.str.replace(r"[a^zA-Z0-9]", "_", regex=True)
+cleansing_practice
+```
+
+
+

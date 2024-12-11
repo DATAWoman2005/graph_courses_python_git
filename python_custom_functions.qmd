@@ -1,0 +1,297 @@
+# Imports
+
+
+```{python}
+import pandas as pd
+import numpy as np
+import vega_datasets as vd
+```
+
+# Basics of a function
+
+
+```{python}
+def pounds_to_kg(pounds):
+    return pounds * 0.4536
+```
+
+### the code above and below are the same
+
+```{python}
+def pds_to_kg(pounds):
+    kg = pounds * 0.4536
+    return kg
+```
+
+```{python}
+pounds_to_kg(150)
+# or we can also say 
+pounds_to_kg(pounds = 150)
+```
+
+
+## using inside a dataframe
+
+```{python}
+pounds_df = pd.DataFrame({"pounds": [150, 200, 250]})
+pounds_df
+```
+
+
+```{python}
+pounds_df['kg'] = pds_to_kg(pounds_df['pounds'])
+pounds_df
+```
+
+## practice Q: Age in Months
+### Create function called years_to_months that transforms 
+### age in years to age in months.
+
+### Use it on the riots_df DataFrame imported below to 
+### create a new column called age_months:
+
+```{python}
+riots_df = vd.data.la_riots()
+riots_df
+```
+
+
+```{python}
+def years_to_months(year):
+    return year * 12
+```
+
+```{python}
+riots_df['age_months'] = years_to_months(riots_df['age'])
+riots_df['age_months'] 
+```
+
+# Functions with Multiple Arguments
+
+```{python}
+def calc_calories(carb_grams, protein_grams, fat_grams):
+    result = (carb_grams * 4) + (protein_grams * 4) + (fat_grams * 9)
+    return result
+```
+
+```{python}
+calc_calories (carb_grams = 50, protein_grams = 25, fat_grams = 15)
+```
+
+```{python}
+# Will not work if argument is incomplete
+# Will not take less than its defined functions
+#calc_calories (carb_grams = 50, protein_grams = 25 # fat_grams = 15)
+```
+
+```{python}
+# default arguments
+# setting to 0 will allow for single arguments to be used
+def calc_calories2(carb_grams = 0, protein_grams = 0, fat_grams = 0):
+    result = (carb_grams * 4) + (protein_grams * 4) + (fat_grams * 9)
+    return result
+```
+
+```{python}
+calc_calories2(carb_grams = 50)
+```
+
+```{python}
+food_df = pd.DataFrame({
+    "food": ["Apple", "Avocado"],
+    "carb": [25, 10],
+    "protein": [0, 1],
+    "fat": [0, 14]
+})
+
+food_df
+```
+
+```{python}
+food_df['calories'] = calc_calories2(carb_grams = food_df['carb'], 
+protein_grams = food_df['protein'], fat_grams = food_df['fat'])
+
+food_df
+```
+
+
+```{python}
+# same code as above
+# for easy readability
+food_df['calories'] = calc_calories2(food_df['carb'], 
+food_df['protein'], food_df['fat'])
+food_df
+```
+
+## Practice Q: BMI Function
+Create a function named 'calc_bmi' that calculates the Body Mass Index (BMI) for one or more individuals, then apply the function by running the code chunk further below. 
+
+The formula for BMI is weight (kg) divided by height (m) squared.
+
+
+```{python}
+def calc_bmi(weight, height):
+    result = weight / (height ** 2)
+    return result
+```
+
+
+```{python}
+bmi_df = pd.DataFrame({
+    'weight': [70, 80, 100], # in kg
+    'height': [1.7, 1.8, 1.2] # in meters
+})
+bmi_df['BMI'] = calc_bmi(bmi_df['weight'], bmi_df['height'])
+bmi_df
+```
+
+# Introduction to conditionals: if, elif, else
+
+
+```{python}
+def class_num(num):
+    if num > 0:
+        return "Positive"
+    elif num < 0:
+        return "Negative"
+    elif num == 0:
+        return "Zero"
+    else:
+        return "Invalid"
+print(class_num(5))
+print(class_num(0))
+print(class_num(-5))
+print(class_num(np.nan))
+```
+
+Using a dataframe
+
+
+```{python}
+num_df = pd.DataFrame({"num": [10, -5, 0]})
+num_df
+```
+
+
+```{python}
+# this does not work -> class_num(num_df['num'])
+# conditionals are not built to take a series
+# class_num function needs to be vectorized with "np.vectorized" function
+class_num_vec = np.vectorize(class_num)
+```
+
+
+```{python}
+num_df['category'] = class_num_vec(num_df['num'])
+num_df
+```
+
+# Practice Q: Write a function that categorizes age into different life stages. 
+- If the age is under 18, the category is 'Minor'.
+- If the age is greater than or equal to 18 and less than 65,
+the category is 'Adut'. 
+- If the age is greater than or equal to 65, the category is 'Senior'.
+- If the age is negative of invalid, return 'Invalid age'. 
+Use it on the riots_df DataFrame printed below to create a new column called Age_Category.
+
+```{python}
+def life_stages(age):
+    if age < 18:
+        return "Minor"
+    elif age >= 18 and age < 65:
+        return "Adult"
+    elif age >= 65:
+        return "Senior"
+    elif age < 0:
+        return "Invalid"
+    else:
+        return "Invalid Age"
+```
+
+
+```{python}
+life_stages_vec = np.vectorize(life_stages)
+life_stages_vec
+```
+```{python}
+riots_df = vd.data.la_riots()
+riots_df
+```
+
+
+```{python}
+riots_df['age_category'] = life_stages_vec(riots_df['age'])
+riots_df['age_category'] 
+riots_df
+```
+
+```{python}
+movies = vd.data.movies()
+movies['Creative_Type'].value_counts(dropna=False)
+```
+
+## Complex Transformation with Custom Functions
+ - For Super Hero movies, if the US gross and worldwide gross are the same (indicating sales were only in the US), the movie is flagged as a **US action movies**.
+ - For Super Hero movies, if the worldwide gross is greater than the US gross, the movie is flagged as a **global action movies**. 
+ - For all other movies, we leave the flag blank.
+
+```{python}
+def flag_movie(movie_type, us, worldwide):
+    if movie_type =='Super Hero' and us == worldwide: 
+        return 'US action movie'
+    elif movie_type == 'Super Hero' and worldwide > us:
+            return 'Global action movie'
+    else:
+                return None
+
+flag_movie_vec = np.vectorize(flag_movie)
+```
+
+```{python}
+flag_movie(movie_type='Super Hero', us=100, worldwide=100)
+flag_movie(movie_type='Super Hero', us=100, worldwide=200)
+flag_movie(movie_type='Comedy', us=100, worldwide=200)
+```
+
+
+```{python}
+movies['Action_Flag'] = flag_movie_vec(movie_type=movies["Creative_Type"], us=movies['US_Gross'], worldwide=movies['Worldwide_Gross'])
+movies['Action_Flag'].value_counts()
+```
+
+# Practice Q: Flag Movies Based on Ratings
+
+In the 'movies' dataset, flag movies as **Critic-friendly** or **Commercial** based on their Rotten Tomatoes and IMDB ratings.
+
+- If the Rotten Tomatoes rating is above 70% and the IMDB rating is below 5, the movie is flagged as **Critic-friendly**.
+- If the Rotten Tomatoes rating is below 50% and the IMDB rating is above 7, the movie is flagged as **Commercial**.
+- Otherwise, the movie is categorized as **Other**.
+- Count how many movies are **Critic-friendly** and **Commercial** . There should be 13 Critic-friendly movies and 33 Commercial movies. Do you recognize any of them?
+
+
+```{python}
+def movie_rating(Rotten_Tomatoes_Rating, IMDB_Rating):
+    if Rotten_Tomatoes_Rating > 70 and IMDB_Rating < 5:
+        return "Critic-friendly"
+    elif Rotten_Tomatoes_Rating < 50 and IMDB_Rating > 7:
+        return "Commercial"
+    else:
+        return "Other"
+movie_rating_vec = np.vectorize(movie_rating)
+```
+
+```{python}
+movies["Critic_Commercial_Flag"] = movie_rating_vec(movies["Rotten_Tomatoes_Rating"], movies["IMDB_Rating"])
+
+```
+
+```{python}
+movie_counts = movies["Critic_Commercial_Flag"].value_counts()
+movie_counts
+```
+
+```{python}
+itic_friendly_movies = movies[movies['Critic_Commercial_Flag'] == 'Critic-friendly']
+commercial_movies = movies[movies['Critic_Commercial_Flag'] == 'Commercial']
+
+```

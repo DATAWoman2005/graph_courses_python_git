@@ -1,0 +1,213 @@
+---
+title: "Workshop 7: Using LLMs to Extract Information from Job Descriptions"
+---
+
+# Introduction
+
+For this week's workshop, you will analyze job posting data using Large Language Models (LLMs). You'll extract structured information from job descriptions and create visualizations to understand patterns in the data science job market.
+
+# Setup
+
+First, make sure this document is in your `graph_courses_python` folder, where your virtual environment is activated and you have the required packages installed.
+
+Run the following code to load the necessary packages:
+
+```{python}
+from openai import OpenAI
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from local_settings import (
+    OPENAI_KEY,
+)  ## Assumes you have a local_settings.py file in your folder with your OpenAI key
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=OPENAI_KEY)
+```
+
+# Define an llm_chat function
+
+Before we start our analysis, let's create a helper function to simplify interactions with the LLM.
+
+Test the function below by asking the question "What is Python (the language) named after?"
+
+```{python}
+def llm_chat(message):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini", messages=[{"role": "user", "content": message}]
+    )
+    return response.choices[0].message.content
+llm_chat( "What is Python (the language) named after?"
+)
+
+# Test the function here
+
+```
+
+# Get the Data
+
+The dataset to be used contains job postings scraped from the website Glassdoor. You can see the scraping project [here](https://github.com/picklesueat/data_jobs_data).
+
+Download it from the website and place it in an appropriate location in your folder. 
+
+Load the data into a pandas dataframe:
+
+```{python}
+
+```
+
+```{python}
+# Your code here
+jobs = pd.read_csv("glassdoor_jobs_sample.csv")
+jobs 
+```
+
+# Task 1: Extract Years of Experience Required
+
+## Part A: Create and Apply LLM Function
+
+We will use the LLM to extract the minimum years of experience required from job descriptions.
+
+We have written the prompt for you. Vectorize the function, then apply it on the `job_description` column of the dataframe. Create a column called `years_required` in the dataframe to store the results.
+
+```{python}
+def yrs_exp(description):
+    prompt = f"""
+    Extract the minimum years of experience required from this job description. 
+    Return ONLY a number. If a range is given, return the lower number.
+    If no years of experience are explicitly mentioned, return 'NA'.
+    Here's the job description:
+    {description}
+    """
+    return llm_chat(prompt)
+
+# Vectorize the function
+yrs_exp_vec = np.vectorize(yrs_exp)
+
+# Apply the function to the dataset
+jobs['years_required'] = yrs_exp_vec(jobs["job_description"])
+# Vectorize the function
+yrs_exp_vec = np.vectorize(yrs_exp)
+
+
+jobs
+```
+
+```{python}
+jobs.to_csv
+```
+
+Write the data to a CSV file and check if the results make sense by comparing them to the original job descriptions.
+
+## Part B: Convert to Numeric
+
+The `years_required` column is currently a string. Convert it to a numeric type using the `pd.to_numeric` function, with the `errors='coerce'` argument so that any non-numeric values are converted to `NaN`.
+
+```{python}
+# Your code here
+jobs['years_required'] = pd.to_numeric(jobs['years_required'], errors='coerce')
+```
+
+## Part C: Create Visualization
+
+Create a visualization comparing years of experience required to the midpoint salary estimate. You'll need to:
+
+- Create a scatter plot using Plotly Express.
+- Use the `midpoint_salary_estimate` column for salary and `years_required` for the x-axis.
+
+```{python}
+# Your code here
+px.scatter (jobs, x = "years_required", y = "midpoint_salary_estimate" )
+# the plot shows no relationship between the years of experience and the midpoint salary estimate.
+```
+
+Describe any relationships you see in the plot.
+
+# Task 2: Extract Programming Language Requirements
+
+In this task, we will ask the LLM to extract the programming languages mentioned in the job descriptions.
+
+## Part A: Create and Apply LLM Function
+
+Now, create a function that asks the model about the programming languages mentioned in the job description. Specifically, it should return one of four categories regarding the languages mentioned: "R", "Python", "both", or "neither". This time, you'll need to craft the prompt yourself.
+
+Apply your function to the dataset and create a new column `lang_req` in the dataframe to store the results.
+
+```{python}
+
+# Define the function
+def lang_req(description):
+    prompt = f"""
+    From the following job description, identify the programming languages mentioned.
+    Return ONLY one of the following categories: "R", "Python", "both", or "neither".
+    If the description mentions "R", return "R".
+    If the description mentions "Python", return "Python".
+    If both are mentioned, return "both".
+    If neither is mentioned, return "neither".
+    Here's the job description:
+    {description}
+    """
+    return llm_chat(prompt)
+
+# Vectorize the function
+lang_req_vec = np.vectorize(lang_req)
+
+# Apply the function to the dataset
+jobs['lang_req'] = lang_req_vec(jobs["job_description"])
+
+jobs
+
+```
+
+## Part B: Create Visualization
+
+First, count the number of jobs that require each of the four categories:
+
+```{python}
+# Your code here
+category_counts = jobs['lang_req'].value_counts()
+category_counts
+```
+
+Create a box plot comparing salary distributions across the different programming language requirement categories:
+
+```{python}
+# Your code here: Create box plot using plotly express
+px.box(jobs, x = "lang_req", y = "salary_estimate" )
+```
+
+Write a few sentences describing any patterns you see in the plot. (Note that this is a very small sample of jobs, so don't read too much into the results.)
+
+Jobs requiring programming skills ("Python", "R", or both) generally have higher salaries compared to jobs that don't require them ("neither").
+Roles requiring both "R" and "Python" seem to command the highest salaries, highlighting the demand for candidates with a broader skill set in programming.
+# Optional Challenge: Most common technical skills. 
+
+Use an LLM function to extract the most common technical skills mentioned in job descriptions, then create a visualization to illuminate the most common technical skills.
+
+You will need to design your own approach to extract and standardize technical skills, being explicit in your prompt about what constitutes a technical skill. 
+
+There's no single correct way to classify and standardize skills - document your choices and reasoning as you develop your solution.
+
+
+```{python}
+
+# Define the function
+def extract_skills(description):
+    prompt = f"""
+    From the following job description, identify and list the technical skills mentioned.
+    Technical skills include programming languages, tools, frameworks, software, and methodologies.
+    Examples of technical skills are: Python, R, SQL, Tableau, Power BI, Git, AWS, Machine Learning, ETL, and similar.
+    Provide the list of technical skills mentioned in the job description.
+    Here's the job description:
+    {description}
+    """
+    return llm_chat(prompt)
+
+# Vectorize the function
+extract_skills_vec = np.vectorize(extract_skills)
+
+# Apply the function to the dataset
+jobs['technical_skills'] = extract_skills_vec(jobs["job_description"])
+jobs
+
+```

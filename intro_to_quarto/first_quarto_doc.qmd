@@ -1,0 +1,61 @@
+---
+title: "My First Quarto Doc"
+author: "Adijat Adenaike"
+format: 
+    html:
+        embed-resources: true
+---
+# Level 1 Header
+
+Markdown lets you use *italics* and also **embolden** text
+
+You can also define bulleted lists:
+
+- First element
+- Second element
+
+You can also add [links](https://thegraphcourses.org)
+
+You can also embed images
+
+![description of the image](image/graphcourse_image.webp)
+
+## Level 2 Header
+
+### Level 3 Header
+
+# Section 1
+
+Hello
+
+# Section 2 
+
+World
+
+
+```{python}
+2 + 2
+```
+
+
+```{python}
+ 3*4
+ for num in [1,2,3]:
+    print(num)
+ 4*4
+```
+# Displaying Tables
+
+
+```{python}
+import plotly.express as px
+from itables import show
+tips = px.data.tips()
+show (tips)
+```
+
+# Displaying Plots
+
+```{python}
+px.violin(tips, x=)
+```
