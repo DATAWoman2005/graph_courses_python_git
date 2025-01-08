@@ -7,27 +7,45 @@ format: dashboard
 import pandas as pd
 import plotly.express as px
 import itables 
+```
 
+```{python}
 # Load the data
 gap = px.data.gapminder()
+```
 
+```{python}
 # Filter for year 2007
 gap_07 = gap.query("year == 2007")
 
+gap_07
+```
+
+```{python}
 # Compute highest life expectancy
-highest_row = gap_07.sort_values("lifeExp", ascending=False).head(1).squeeze()
+highest_row = gap_07.sort_values("lifeExp", ascending=False).head(5).squeeze()
 highest_life_exp_country = highest_row["country"]
 highest_life_exp_value = round(highest_row["lifeExp"], 1)
 
+print(f"country with the highest number: {[highest_row]}")
+print(f"country with the highest life expectancy: {[highest_life_exp_country]}")
+```
+
+```{python}
 # Compute lowest life expectancy
 lowest_row = gap_07.sort_values("lifeExp", ascending=True).head(1).squeeze()
 lowest_life_exp_country = lowest_row["country"]
 lowest_life_exp_value = round(lowest_row["lifeExp"], 1)
+```
 
+```{python}
 # Compute average (population-weighted) life expectancy
 weighted_mean = (gap_07["lifeExp"] * gap_07["pop"]).sum() / gap_07["pop"].sum()
 average_life_exp_value = round(weighted_mean, 1)
 
+```
+
+```{python}
 # Create the map using plotly express with a blue color scale
 map_fig = px.choropleth(
     gap_07,
@@ -48,9 +66,14 @@ bar_fig = px.bar(
     color="lifeExp",
     color_continuous_scale="Blues",
 ).update_layout(coloraxis_showscale=False)
-
+map_fig
 ```
 
+
+
+```{python}
+
+```
 # HOME
 
 ## Row 1 {height=30%}
