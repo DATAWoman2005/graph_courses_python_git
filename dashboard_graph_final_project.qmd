@@ -937,7 +937,7 @@ print(country_analysed)
 
 ```
 
-::: {.valuebox title="Countries Represented in Analysis" icon="map" color="primary"}
+::: {.valuebox title="Countries Represented in Analysis" icon="globe2" color="primary"}
 `{python} country_analysed`
 :::
 
@@ -965,7 +965,7 @@ print(f"Global Average Suicide Rate: {global_avg_suicide_rate:.1f} per 100k")
 
 ```
 
-::: {.valuebox title="Global Average Suicide Rate" icon="exclamation-triangle" color="warning"}
+::: {.valuebox title="Global Average Suicide Rate" icon="exclamation-triangle" color="danger"}
 `{python} str(global_avg_suicide_rate.round(1))`
 :::
 
@@ -1000,7 +1000,7 @@ print(f"The year with the highest global average suicide rate was {year_with_hig
 
 ```
 
-::: {.valuebox title="The Year with the Highest Global Average Suicide Rate" icon="exclamation" color="warning"}
+::: {.valuebox title="The Year with the Highest Global Average Suicide Rate" icon="exclamation" color="danger"}
 `{python} str(year_with_highest_suicide_rate)`
 :::
 
@@ -1247,7 +1247,7 @@ itables.show(suicide_rate_pivot, caption="Suicide Rate Dataset", buttons=["csvHt
 itables.show(df_merged, caption="Merged Happiness and Suicide Rate Dataset", buttons=["csvHtml5"])
 ```
 
-# ABOUT
+# About
 
 The happiness score data originates from the gapminder dataset within Python’s plotly.express library, sourced from the Gapminder Foundation. This non-profit organization champions sustainable global development and the realization of United Nations Millennium Development Goals by advancing the use of data to enhance understanding of social, economic, and environmental progress.
 
