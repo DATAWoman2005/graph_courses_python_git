@@ -648,7 +648,7 @@ print(f"Average Mortality Rate for that Year: {lowest_avg_rate:.2f} per 100,000 
 `{python} str(global_avg_suicide_mortality.round(1))`
 :::
 
-::: {.valuebox title="Year with Highest Rate" icon="exclamation-octagon" color="danger"}
+::: {.valuebox title="Year with Highest Rate" icon="exclamation-octagon" color="warning"}
 `{python} str(year_with_highest_rate)`
 :::
 
@@ -673,7 +673,7 @@ print(f"Global Male-to-Female Suicide Mortality Ratio: {formatted_ratio}")
 
 ```
 
-::: {.valuebox title="Staggering Male Suicide Disparity" icon="people" color="danger"} 
+::: {.valuebox title="Staggering Male Suicide Disparity" icon="people" color="warning"} 
 `{python} formatted_ratio` 
 :::
 
